@@ -48,7 +48,9 @@ You need to create a Notion integration and a database to save the form data.
 Copy `.env.example` to `.env.local` and fill in the Notion API key and database ID.
 
 **EIP-712 config**: Tweak it on `packages/nextjs/eip712.tsx`
+
 **Edit form**: Edit it on `packages/nextjs/pages/index.tsx`
+
 **Edit backend**: Edit it on `packages/nextjs/pages/api/submission.tsx`
 
 ```bash
