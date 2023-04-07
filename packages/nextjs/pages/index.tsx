@@ -1,9 +1,105 @@
+import React, { useState } from "react";
 import Head from "next/head";
-import Link from "next/link";
 import type { NextPage } from "next";
-import { BugAntIcon, SparklesIcon } from "@heroicons/react/24/outline";
+import { useAccount, useSignMessage } from "wagmi";
+import { RainbowKitCustomConnectButton } from "~~/components/scaffold-eth";
+import { notification } from "~~/utils/scaffold-eth";
+
+interface SubmissionData {
+  name?: string;
+  message?: string;
+  url?: string;
+}
+
+const emtpyData = {
+  name: "",
+  message: "",
+  url: "",
+};
 
 const Home: NextPage = () => {
+  const { address, isConnected } = useAccount();
+  const [formData, setFormData] = useState(emtpyData);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [errors, setErrors] = useState<SubmissionData>({});
+
+  const { signMessage } = useSignMessage({
+    async onSuccess(data, variables) {
+      // Send POST request to server.
+      try {
+        const payload = {
+          ...formData,
+          address,
+          signature: data,
+          message: variables.message,
+        };
+        const response = await fetch("/api/submissions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
+
+        if (response.status === 200) {
+          notification.success(<span className="font-bold">Submission received! 🎉</span>);
+          setFormData(emtpyData);
+          setIsSubmitted(true);
+        } else {
+          notification.error(
+            <>
+              <span className="font-bold">Server Error.</span>
+              <br />
+              Something went wrong. Please try again
+            </>,
+          );
+        }
+      } catch (error) {
+        console.error(error);
+        notification.error(
+          <>
+            <span className="font-bold">Server Error.</span>
+            <br />
+            Something went wrong. Please try again
+          </>,
+        );
+      } finally {
+        setIsSubmitting(false);
+      }
+    },
+  });
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>) => {
+    const { name, value } = event.target;
+    console.log("name", name, value, event.target);
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setIsSubmitting(true);
+    const validationErrors = validateForm(formData);
+    if (Object.keys(validationErrors).length === 0) {
+      setErrors({});
+      signMessage({ message: "hola" });
+    } else {
+      setErrors(validationErrors);
+      setIsSubmitting(false);
+    }
+  };
+
+  const validateForm = (formData: SubmissionData) => {
+    const errors: SubmissionData = {};
+    const urlRegex = /^(http|https):\/\/[^ "]+$/;
+
+    if (!formData.name) errors.name = "Name is required";
+    if (!formData.message) errors.message = "Message is required";
+    if (formData.url && !urlRegex.test(formData.url)) errors.url = "URL is invalid";
+
+    return errors;
+  };
+
   return (
     <>
       <Head>
@@ -12,44 +108,71 @@ const Home: NextPage = () => {
       </Head>
 
       <div className="flex items-center flex-col flex-grow pt-10">
-        <div className="px-5">
-          <h1 className="text-center mb-8">
-            <span className="block text-2xl mb-2">Welcome to</span>
-            <span className="block text-4xl font-bold">scaffold-eth 2</span>
-          </h1>
-          <p className="text-center text-lg">
-            Get started by editing{" "}
-            <code className="italic bg-base-300 text-base font-bold">packages/nextjs/pages/index.tsx</code>
-          </p>
-          <p className="text-center text-lg">
-            Edit your smart contract <code className="italic bg-base-300 text-base font-bold">YourContract.sol</code> in{" "}
-            <code className="italic bg-base-300 text-base font-bold">packages/hardhat/contracts</code>
-          </p>
-        </div>
+        <div className="bg-secondary w-[90%] max-w-2xl p-10">
+          <h1 className="text-center font-bold text-2xl">Submit to Notion</h1>
+          {!isSubmitted ? (
+            <form onSubmit={handleSubmit} className="flex flex-col">
+              <div className="flex flex-col relative">
+                <label className="font-bold" htmlFor="title">
+                  Name <span className="text-error">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={formData.name}
+                  className="input border-secondary mt-2 mb-6"
+                  onChange={handleChange}
+                />
+                {errors.name && <div className="text-error absolute right-0 bottom-0 text-sm">{errors.name}</div>}
+              </div>
 
-        <div className="flex-grow bg-base-300 w-full mt-16 px-8 py-12">
-          <div className="flex justify-center items-center gap-12 flex-col sm:flex-row">
-            <div className="flex flex-col bg-base-100 px-10 py-10 text-center items-center max-w-xs rounded-3xl">
-              <BugAntIcon className="h-8 w-8 fill-secondary" />
-              <p>
-                Tinker with your smart contract using the{" "}
-                <Link href="/debug" passHref className="link">
-                  Debug Contract
-                </Link>{" "}
-                tab.
-              </p>
+              <div className="flex flex-col relative">
+                <label className="font-bold" htmlFor="description">
+                  Message <span className="text-error">*</span>
+                </label>
+                <textarea
+                  id="message"
+                  name="message"
+                  value={formData.message}
+                  rows={3}
+                  className="input border-secondary mt-2 mb-6 h-auto textarea"
+                  onChange={handleChange}
+                />
+                {errors.message && <div className="text-error absolute right-0 bottom-0 text-sm">{errors.message}</div>}
+              </div>
+
+              <div className="flex flex-col relative mb-6">
+                <label className="font-bold" htmlFor="githubURL">
+                  URL
+                </label>
+                <input
+                  type="text"
+                  id="url"
+                  name="url"
+                  value={formData.url}
+                  className="input border-secondary mt-2 mb-6"
+                  onChange={handleChange}
+                />
+                {errors.url && <div className="text-error absolute right-0 bottom-0 text-sm">{errors.url}</div>}
+              </div>
+
+              {isConnected ? (
+                <button type="submit" className={`btn btn-primary ${isSubmitting ? "loading" : ""}`}>
+                  Submit
+                </button>
+              ) : (
+                <RainbowKitCustomConnectButton />
+              )}
+            </form>
+          ) : (
+            <div className="flex flex-col items-center text-center">
+              <p className="text-2xl font-archivo-black">Thank you for submitting!</p>
+              <button className="btn btn-ghost" onClick={() => setIsSubmitted(false)}>
+                Go back
+              </button>
             </div>
-            <div className="flex flex-col bg-base-100 px-10 py-10 text-center items-center max-w-xs rounded-3xl">
-              <SparklesIcon className="h-8 w-8 fill-secondary" />
-              <p>
-                Experiment with{" "}
-                <Link href="/example-ui" passHref className="link">
-                  Example UI
-                </Link>{" "}
-                to build your own UI.
-              </p>
-            </div>
-          </div>
+          )}
         </div>
       </div>
     </>

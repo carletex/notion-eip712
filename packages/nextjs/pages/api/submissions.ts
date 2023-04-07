@@ -14,5 +14,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     console.error("Not a POST request");
     res.status(400).json({ message: "Not a POST request" });
   }
-  console.log(notion, databaseId);
+
+  const { signature, message } = req.body;
+  console.log("Signature", signature);
+  console.log("message", message);
+  res.status(200).json({ message: "Submission successfully saved" });
 }

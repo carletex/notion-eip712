@@ -65,10 +65,6 @@ export const useAutoConnect = (): void => {
   }, [accountState.isConnected, accountState.connector?.name]);
 
   useEffectOnce(() => {
-    if (!contracts) {
-      return;
-    }
-
     const initialConnector = getInitialConnector(walletId, connectState.connectors);
 
     if (initialConnector?.connector) {
