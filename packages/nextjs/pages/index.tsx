@@ -29,6 +29,8 @@ const Home: NextPage = () => {
     signTypedData,
     data,
     isSuccess: signingSuccess,
+    isError: signingError,
+    error: signingErrorMessage,
   } = useSignTypedData({
     domain: EIP_712_DOMAIN,
     types: EIP_712_TYPES,
@@ -39,6 +41,18 @@ const Home: NextPage = () => {
   });
 
   useEffect(() => {
+    if (signingErrorMessage) {
+      notification.error(
+        <>
+          <span className="font-bold">Signature Error.</span>
+          <br />
+          {signingErrorMessage.toString()}
+        </>,
+      );
+      setIsSubmitting(false);
+      return;
+    }
+
     const sendPostToBackend = async () => {
       try {
         const payload = {
@@ -86,7 +100,7 @@ const Home: NextPage = () => {
       sendPostToBackend();
     }
     // eslint-disable-next-line
-  }, [signingSuccess, data]);
+  }, [signingSuccess, signingErrorMessage, data]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>) => {
     const { name, value } = event.target;

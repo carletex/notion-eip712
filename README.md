@@ -30,7 +30,7 @@ Before you begin, you need to install the following tools:
 
 To get started with Scaffold-Eth 2, follow the steps below:
 
-1. Clone this repo & install dependencies
+#### 1. Clone this repo & install dependencies
 
 ```
 git clone https://github.com/carletex/notion-eip712.git
@@ -38,17 +38,20 @@ cd notion-eip712
 yarn install
 ```
 
-2. Notion & project Configuration
+#### 2. Notion & project Configuration
 
 You need to create a Notion integration and a database to save the form data.
 
--> Get your Notion secret integration key on https://www.notion.so/my-integrations
-
--> Create a database on Notion and connect your integration to it https://developers.notion.com/docs/create-a-notion-integration#step-3-save-the-database-id
+-> Get your **Notion secret integration key** on https://www.notion.so/my-integrations
+-> Create a **database on Notion** and connect your integration to it https://developers.notion.com/docs/create-a-notion-integration#step-3-save-the-database-id
 
 Copy `.env.example` to `.env.local` and fill in the Notion API key and database ID.
 
-```
+**EIP-712 config**: Tweak it on `packages/nextjs/eip712.tsx`
+**Edit form**: Edit it on `packages/nextjs/pages/index.tsx`
+**Edit backend**: Edit it on `packages/nextjs/pages/api/submission.tsx`
+
+```bash
 # Get your Notion secret integration key on https://www.notion.so/my-integrations
 # More info about integrations: https://developers.notion.com/docs/create-a-notion-integration
 NOTION_SECRET_INTEGRATION_TOKEN=
@@ -57,7 +60,7 @@ NOTION_SECRET_INTEGRATION_TOKEN=
 NOTION_DATABASE_ID=
 ```
 
-3. Start your NextJS app:
+#### 3. Start your NextJS app:
 
 ```
 yarn start

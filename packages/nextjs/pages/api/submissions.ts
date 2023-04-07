@@ -33,12 +33,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     res.status(401).json({ message: "Invalid signature" });
   }
 
+  // Make sure the props have the exact same name as the ones in your Notion database (name, message, url, etc.)
   await notion.pages.create({
     parent: { database_id: databaseId },
     properties: {
-      name: { title: [{ type: "text", text: { content: values.name } }] },
-      message: { rich_text: [{ type: "text", text: { content: values.message } }] },
-      url: { url: values.url },
+      name: { title: [{ type: "text", text: { content: values.name || null } }] },
+      message: { rich_text: [{ type: "text", text: { content: values.message || null } }] },
+      url: { url: values.url || null },
       signerAddress: { rich_text: [{ type: "text", text: { content: recoveredAddress } }] },
       date: { date: { start: new Date().toISOString() } },
     },
