@@ -29,7 +29,6 @@ const Home: NextPage = () => {
     signTypedData,
     data,
     isSuccess: signingSuccess,
-    isError: signingError,
     error: signingErrorMessage,
   } = useSignTypedData({
     domain: EIP_712_DOMAIN,
