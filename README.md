@@ -4,6 +4,8 @@ Creates a form, signs it with EIP-712 and saves it to a Notion page.
 
 Workflow: UI Form => sign it with EIP-712 => POST request to NextJS endpoint => Save it to Notion
 
+Built with [Scaffold-Eth 2](https://github.com/scaffold-eth/se-2/)
+
 ## Contents
 
 - [Requirements](#requirements)
@@ -33,7 +35,20 @@ cd notion-eip712
 yarn install
 ```
 
-2. Start your NextJS app:
+2. Configuration
+
+Copy `.env.example` to `.env` and fill in the Notion API key and database ID.
+
+```
+# Get your notion API key on https://www.notion.so/my-integrations
+# More info about integrations: https://developers.notion.com/docs/create-a-notion-integration
+NOTION_API_KEY=
+# Get your database ID from the notion page(database) and connect your integration to it
+# https://developers.notion.com/docs/create-a-notion-integration#step-3-save-the-database-id
+NOTION_DATABASE_ID=
+```
+
+3. Start your NextJS app:
 
 ```
 yarn start
@@ -49,6 +64,8 @@ Run `yarn vercel` and follow the steps to deploy to Vercel. Once you log in (ema
 If you want to redeploy to the same production URL you can run `yarn vercel --prod`. If you omit the `--prod` flag it will deploy it to a preview/test URL.
 
 **Hint**: We recommend connecting the project GitHub repo to Vercel so you the gets automatically deployed when pushing to `main`
+
+**Note**: Don't forget to create and set the env variables (NOTION_API_KEY & NOTION_DATABASE_ID) in Vercel dashboard.
 
 ## Disabling type and linting error checks
 > **Hint**
