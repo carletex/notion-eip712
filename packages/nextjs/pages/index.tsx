@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Head from "next/head";
 import type { NextPage } from "next";
-import { useAccount, useSignMessage } from "wagmi";
+import { useAccount, useSignTypedData } from "wagmi";
 import { RainbowKitCustomConnectButton } from "~~/components/scaffold-eth";
+import { EIP_712_DOMAIN, EIP_712_TYPES } from "~~/eip712";
 import { notification } from "~~/utils/scaffold-eth";
 
 interface SubmissionData {
@@ -24,15 +25,27 @@ const Home: NextPage = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [errors, setErrors] = useState<SubmissionData>({});
 
-  const { signMessage } = useSignMessage({
-    async onSuccess(data, variables) {
-      // Send POST request to server.
+  const {
+    signTypedData,
+    data,
+    isSuccess: signingSuccess,
+  } = useSignTypedData({
+    domain: EIP_712_DOMAIN,
+    types: EIP_712_TYPES,
+    value: {
+      ...formData,
+      from: address || "",
+    },
+  });
+
+  useEffect(() => {
+    const sendPostToBackend = async () => {
       try {
         const payload = {
           ...formData,
-          address,
+          from: address,
           signature: data,
-          message: variables.message,
+          values: formData,
         };
         const response = await fetch("/api/submissions", {
           method: "POST",
@@ -67,12 +80,16 @@ const Home: NextPage = () => {
       } finally {
         setIsSubmitting(false);
       }
-    },
-  });
+    };
+
+    if (signingSuccess) {
+      console.log("signingSuccess", data);
+      sendPostToBackend();
+    }
+  }, [signingSuccess, data]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>) => {
     const { name, value } = event.target;
-    console.log("name", name, value, event.target);
     setFormData({ ...formData, [name]: value });
   };
 
@@ -82,7 +99,7 @@ const Home: NextPage = () => {
     const validationErrors = validateForm(formData);
     if (Object.keys(validationErrors).length === 0) {
       setErrors({});
-      signMessage({ message: "hola" });
+      signTypedData();
     } else {
       setErrors(validationErrors);
       setIsSubmitting(false);
