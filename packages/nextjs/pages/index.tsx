@@ -83,9 +83,9 @@ const Home: NextPage = () => {
     };
 
     if (signingSuccess) {
-      console.log("signingSuccess", data);
       sendPostToBackend();
     }
+    // eslint-disable-next-line
   }, [signingSuccess, data]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>) => {
