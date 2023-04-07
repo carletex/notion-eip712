@@ -4,6 +4,9 @@ Creates a form, signs it with EIP-712 and saves it to a Notion page.
 
 Workflow: UI Form => sign it with EIP-712 => POST request to NextJS endpoint => Save it to Notion
 
+![Form + EIP-712 signature](.github/img/n.png)
+![Notion submissions](.github/img/n1.png)
+
 Built with [Scaffold-Eth 2](https://github.com/scaffold-eth/se-2/)
 
 ## Contents
