@@ -43,6 +43,7 @@ yarn install
 You need to create a Notion integration and a database to save the form data.
 
 -> Get your **Notion secret integration key** on https://www.notion.so/my-integrations
+
 -> Create a **database on Notion** and connect your integration to it https://developers.notion.com/docs/create-a-notion-integration#step-3-save-the-database-id
 
 Copy `.env.example` to `.env.local` and fill in the Notion API key and database ID.
