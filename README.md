@@ -37,12 +37,12 @@ yarn install
 
 2. Configuration
 
-Copy `.env.example` to `.env` and fill in the Notion API key and database ID.
+Copy `.env.example` to `.env.local` and fill in the Notion API key and database ID.
 
 ```
 # Get your notion API key on https://www.notion.so/my-integrations
 # More info about integrations: https://developers.notion.com/docs/create-a-notion-integration
-NOTION_API_KEY=
+NOTION_SECRET_INTEGRATION_TOKEN=
 # Get your database ID from the notion page(database) and connect your integration to it
 # https://developers.notion.com/docs/create-a-notion-integration#step-3-save-the-database-id
 NOTION_DATABASE_ID=
@@ -65,7 +65,7 @@ If you want to redeploy to the same production URL you can run `yarn vercel --pr
 
 **Hint**: We recommend connecting the project GitHub repo to Vercel so you the gets automatically deployed when pushing to `main`
 
-**Note**: Don't forget to create and set the env variables (NOTION_API_KEY & NOTION_DATABASE_ID) in Vercel dashboard.
+**Note**: Don't forget to create and set the env variables (NOTION_SECRET_INTEGRATION_TOKEN & NOTION_DATABASE_ID) in Vercel dashboard.
 
 ## Disabling type and linting error checks
 > **Hint**
