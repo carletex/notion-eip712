@@ -35,12 +35,18 @@ cd notion-eip712
 yarn install
 ```
 
-2. Configuration
+2. Notion & project Configuration
+
+You need to create a Notion integration and a database to save the form data.
+
+-> Get your Notion secret integration key on https://www.notion.so/my-integrations
+
+-> Create a database on Notion and connect your integration to it https://developers.notion.com/docs/create-a-notion-integration#step-3-save-the-database-id
 
 Copy `.env.example` to `.env.local` and fill in the Notion API key and database ID.
 
 ```
-# Get your notion API key on https://www.notion.so/my-integrations
+# Get your Notion secret integration key on https://www.notion.so/my-integrations
 # More info about integrations: https://developers.notion.com/docs/create-a-notion-integration
 NOTION_SECRET_INTEGRATION_TOKEN=
 # Get your database ID from the notion page(database) and connect your integration to it

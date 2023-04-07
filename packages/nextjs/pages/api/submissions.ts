@@ -2,7 +2,7 @@
 import { Client } from "@notionhq/client";
 import { NextApiRequest, NextApiResponse } from "next";
 
-// Get your notion API key on https://www.notion.so/my-integrations
+// Get your Notion secret integration key on https://www.notion.so/my-integrations
 // More info about integrations: https://developers.notion.com/docs/create-a-notion-integration
 const notion = new Client({ auth: process.env.NOTION_SECRET_INTEGRATION_TOKEN });
 // Get your database ID from the notion page(database) and connect your integration to it
